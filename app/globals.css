@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0b0e0c;
+  --color-panel: #111713;
+  --color-panel-2: #151d18;
+  --color-accent: #a6ff8f;
+  --color-accent-dim: #6fb85f;
+  --color-fg: #e8f1e8;
+  --color-muted: #89978d;
+  --color-line: #28352c;
+  --color-line-strong: #3a4a3f;
+  /* Couleurs réservées aux indicateurs système et contrôles de fenêtre */
+  --color-ok: #a6ff8f;
+  --color-warn: #f5c451;
+  --color-orange: #f29f4c;
+  --color-err: #ff6b5e;
+
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+
+  --animate-line: line 240ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-window: window 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-blink: blink 1.1s steps(1) infinite;
+
+  @keyframes line {
+    from {
+      opacity: 0;
+      transform: translateY(3px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes window {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.99);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  /* Curseur bloc : plein sur la 1re moitié, éteint sur la 2nde. Sans animation, il reste plein. */
+  @keyframes blink {
+    50% {
+      background-color: transparent;
+      color: inherit;
+    }
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* « clip » (et non « hidden ») : la page ne peut pas défiler, même par programme */
+  overflow: clip;
+  font-feature-settings: "calt" 1;
+}
+
+/* Fond de page : halo vert très diffus + grille de console qui s'estompe */
+.backdrop {
+  background:
+    radial-gradient(60rem 30rem at 50% -8rem, rgb(166 255 143 / 0.075), transparent 70%),
+    radial-gradient(40rem 30rem at 100% 100%, rgb(166 255 143 / 0.03), transparent 70%),
+    var(--color-bg);
+}
+.backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgb(40 53 44 / 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(40 53 44 / 0.35) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent 75%);
+}
+
+/* Fenêtre : liseré lumineux en haut + ombre portée profonde */
+.window-shadow {
+  box-shadow:
+    inset 0 1px 0 rgb(232 241 232 / 0.05),
+    0 0 0 1px rgb(0 0 0 / 0.4),
+    0 30px 80px -20px rgb(0 0 0 / 0.75),
+    0 0 120px -40px rgb(166 255 143 / 0.12);
+}
+
+/* Fondu en haut de la zone de défilement, sous la barre de titre */
+.scroll-fade {
+  mask-image: linear-gradient(to bottom, transparent 0, black 1.25rem);
+}
+
+::selection {
+  background: rgb(166 255 143 / 0.28);
+  color: var(--color-fg);
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* Barres de défilement fines */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+.thin-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-line-strong);
+  border-radius: 8px;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
